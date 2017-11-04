@@ -2,7 +2,8 @@
 
 class TicTacToe
   def initialize
-    @board = Array.new(9," ")
+    #@board = Array.new(9," ")
+    @board = [" ","X"," "," "," ","X","O","O"," "]
     @choice
     @player = "O"
     @opponent = "X"
@@ -59,7 +60,8 @@ class TicTacToe
       #Computer move
       #ai_move = minimax(@board)
       puts "Computer Moves:"
-      minimax(@board)
+      depth = 0
+      minimax(@board,depth)
       puts "minimax selects #{@choice}"
       ai_move = @choice;
       move(ai_move,current_player)
@@ -151,15 +153,16 @@ def get_available_moves(aboard)
     return avail
 end
 
-def minimax(aboard)
-    return score(aboard) if over?(aboard)
+def minimax(aboard,depth)
+    return score(aboard,depth) if over?(aboard)
     scores = [] # an array of scores
     moves = []  # an array of moves
-    puts get_available_moves(aboard).length
+    depth += 1
+    #puts depth
     # Populate the scores array, recursing as needed
     get_available_moves(aboard).each do |move|
         possible_game = get_new_state(aboard,move)
-        scores.push minimax(possible_game)
+        scores.push minimax(possible_game,depth)
         moves.push move
     end
 
@@ -177,11 +180,14 @@ def minimax(aboard)
     end
 end
 
-def score(board)
+def score(board,depth)
+
     if winner(board) == @player
-        return 10
+        puts "Depth: #{depth} Score:#{10-depth}"
+        return 10-depth
     elsif winner(board) == @opponent
-        return -10
+        puts "Depth: #{depth} Score:#{depth-10}"
+        return depth-10
     else
         return 0
     end
